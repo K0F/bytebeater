@@ -19,13 +19,62 @@ char full;
 int t;
 unsigned char running = TRUE;
 
-typedef struct{
-  Uint8 r;
-  Uint8 g;
-  Uint8 b;
-  Uint8 alpha;
-} pixel;
+float minframetime;
+SDL_Surface *screen;
+Uint32 frametime;
 
+
+
+void putpixel(int x, int y, int color){
+  unsigned int *ptr = (unsigned int*)screen->pixels;
+  int lineoffset = y * (screen->pitch / 4);
+  ptr[lineoffset + x] = color;
+}
+
+
+
+
+
+
+void render(){   
+
+  t++;
+
+  frametime = SDL_GetTicks (); 
+
+
+  // Lock surface if needed
+  if (SDL_MUSTLOCK(screen)) 
+    if (SDL_LockSurface(screen) < 0) 
+      return;
+
+
+
+  // Draw to screen
+  int offset = 0;
+  Uint32 *pixels = (Uint32*) screen->pixels;
+  for (int y = 0; y < HEIGHT; y++){
+    for (int x = 0 ;x < WIDTH; x++){
+      offset = (screen->pitch / sizeof(Uint32)) * y + x;
+      int br = (x*x+y*y)+t ;
+      *(pixels + offset) = br;
+    }
+  }
+
+
+  /*
+     putpixel(10, 10, 0xff0000);
+     putpixel(11, 10, 0xff0000);
+     putpixel(10, 11, 0xff0000);
+     putpixel(11, 11, 0xff0000);
+     */
+  // Unlock if needed
+  if (SDL_MUSTLOCK(screen)) 
+    SDL_UnlockSurface(screen);
+
+  // Tell SDL to update the whole screen
+  SDL_UpdateRect(screen, 0, 0, WIDTH, HEIGHT);    
+}
 
 int main(int argc,char *argv[]){
 
@@ -42,11 +91,6 @@ int main(int argc,char *argv[]){
 
 
 
-  /* Set up the video */
-
-  SDL_Surface *screen;
-
-
   screen = SDL_SetVideoMode( WIDTH, HEIGHT, BPP, SDL_HWSURFACE );
 
   if( screen == NULL ) {
@@ -60,44 +104,33 @@ int main(int argc,char *argv[]){
 
   //SDL_ShowCursor( SDL_DISABLE ); // The cursor is ugly :)
 
-
-
-  /* Set up the SDL_TTF */
-
   TTF_Init();
   TTF_Font *font = TTF_OpenFont( "assets/SempliceRegular.ttf", 8 );
 
   SDL_Color clrFg = {255,255,255,0};  // Blue ("Fg" is foreground)
   SDL_Surface *sText = TTF_RenderText_Solid( font, "Some random text", clrFg );
-  SDL_Rect rcDest = {100,100,0,0};
+  SDL_Rect rcDest = {10,10,0,0};
   SDL_BlitSurface( sText,NULL, screen,&rcDest );
   SDL_FreeSurface( sText );
 
-  float minframetime = (1000.0 / fps);
   int running = 1;
   SDL_Event event;
-  Uint32 frametime;
   int t = 0;
+  minframetime = (1000.0 / fps);
+
 
   while(running==1){
-    frametime = SDL_GetTicks (); 
+
+    render();
+
 
     while (SDL_PollEvent (&event) != 0){
       switch(event.type){
-        case SDL_KEYDOWN: if (event.key.keysym.sym == SDLK_ESCAPE)
-                            running = 0;
-                          break;
+	case SDL_KEYDOWN: if (event.key.keysym.sym == SDLK_ESCAPE)
+			    running = 0;
+			  break;
       }
     }
-
-
-    if (SDL_GetTicks () - frametime < minframetime)
-      SDL_Delay (minframetime - (SDL_GetTicks () - frametime));
-      
-    t++;
-
-    SDL_Flip (screen);
-
   }
 
 
@@ -105,7 +138,6 @@ int main(int argc,char *argv[]){
 
   atexit(TTF_Quit);
 
-  SDL_Flip (screen);
   SDL_FreeSurface (screen);
   SDL_Delay (200);
 
