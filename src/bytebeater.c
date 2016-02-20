@@ -27,9 +27,6 @@ typedef struct{
 } pixel;
 
 
-
-
-
 int main(int argc,char *argv[]){
 
 
@@ -72,7 +69,7 @@ int main(int argc,char *argv[]){
 
   SDL_Color clrFg = {255,255,255,0};  // Blue ("Fg" is foreground)
   SDL_Surface *sText = TTF_RenderText_Solid( font, "Some random text", clrFg );
-  SDL_Rect rcDest = {0,0,0,0};
+  SDL_Rect rcDest = {100,100,0,0};
   SDL_BlitSurface( sText,NULL, screen,&rcDest );
   SDL_FreeSurface( sText );
 
@@ -80,6 +77,7 @@ int main(int argc,char *argv[]){
   int running = 1;
   SDL_Event event;
   Uint32 frametime;
+  int t = 0;
 
   while(running==1){
     frametime = SDL_GetTicks (); 
@@ -96,7 +94,8 @@ int main(int argc,char *argv[]){
     if (SDL_GetTicks () - frametime < minframetime)
       SDL_Delay (minframetime - (SDL_GetTicks () - frametime));
       
-    
+    t++;
+
     SDL_Flip (screen);
 
   }
