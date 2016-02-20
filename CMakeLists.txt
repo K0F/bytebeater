@@ -14,4 +14,5 @@ add_executable(bytebeater "src/bytebeater.c")
 target_link_libraries(bytebeater ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(bytebeater ${SDL_LIBRARY})
 target_link_libraries(bytebeater ${SDLTTF_LIBRARY})
+target_link_libraries(bytebeater m)
 

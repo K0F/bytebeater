@@ -4,8 +4,8 @@
 #define FALSE 0
 #define BUFSIZE 256
 
-#define WIDTH 640
-#define HEIGHT 400
+#define WIDTH 800
+#define HEIGHT 450
 #define BPP 24
 #define sec 1000;
 
@@ -21,32 +21,14 @@ unsigned char running = TRUE;
 float minframetime;
 SDL_Surface *screen;
 Uint32 frametime;
-
-
-
-void PutPixel24(SDL_Surface * surface, int x, int y, Uint32 color)
-{
-    Uint8 * pixel = (Uint8*)surface->pixels;
-    pixel += (y * surface->pitch) + (x * sizeof(Uint8) * 3);
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    pixel[0] = (color >> 24) & 0xFF;
-    pixel[1] = (color >> 16) & 0xFF;
-    pixel[2] = (color >> 8) & 0xFF;
-#else
-    pixel[0] = color & 0xFF;
-    pixel[1] = (color >> 8) & 0xFF;
-    pixel[2] = (color >> 16) & 0xFF;
-#endif
-}
-
+int time =0;
 
 
 void render(){   
 
-  t++;
 
   frametime = SDL_GetTicks (); 
-
+  time++;
 
   // Lock surface if needed
   if (SDL_MUSTLOCK(screen)) 
@@ -59,19 +41,13 @@ void render(){
   int offset = 0;
   for (int y = 0; y < HEIGHT; y++){
     for (int x = 0 ;x < WIDTH; x++){
-      int expr = x*y*t/1000;
+  t++;
+      float expr = ((x)^(y+time))/(sin(time/100000.+(y/100.))+1.01)*10;
       int color = SDL_MapRGB(screen->format,expr,expr,expr);
       PutPixel24(screen,x,y,color);
     }
   }
 
-
-  /*
-     putpixel(10, 10, 0xff0000);
-     putpixel(11, 10, 0xff0000);
-     putpixel(10, 11, 0xff0000);
-     putpixel(11, 11, 0xff0000);
-     */
   // Unlock if needed
   if (SDL_MUSTLOCK(screen)) 
     SDL_UnlockSurface(screen);
@@ -149,3 +125,20 @@ int main(int argc,char *argv[]){
   return 0;
 
 }
+void PutPixel24(SDL_Surface * surface, int x, int y, Uint32 color)
+{
+    Uint8 * pixel = (Uint8*)surface->pixels;
+    pixel += (y * surface->pitch) + (x * sizeof(Uint8) * 3);
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    pixel[0] = (color >> 24) & 0xFF;
+    pixel[1] = (color >> 16) & 0xFF;
+    pixel[2] = (color >> 8) & 0xFF;
+#else
+    pixel[0] = color & 0xFF;
+    pixel[1] = (color >> 8) & 0xFF;
+    pixel[2] = (color >> 16) & 0xFF;
+#endif
+}
+
+
+
