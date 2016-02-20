@@ -5,9 +5,8 @@
 #define BUFSIZE 256
 
 #define WIDTH 640
-#define HEIGHT 480
-#define BPP 8
-#define DEPTH 32
+#define HEIGHT 400
+#define BPP 24
 #define sec 1000;
 
 
@@ -25,14 +24,20 @@ Uint32 frametime;
 
 
 
-void putpixel(int x, int y, int color){
-  unsigned int *ptr = (unsigned int*)screen->pixels;
-  int lineoffset = y * (screen->pitch / 4);
-  ptr[lineoffset + x] = color;
+void PutPixel24(SDL_Surface * surface, int x, int y, Uint32 color)
+{
+    Uint8 * pixel = (Uint8*)surface->pixels;
+    pixel += (y * surface->pitch) + (x * sizeof(Uint8) * 3);
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    pixel[0] = (color >> 24) & 0xFF;
+    pixel[1] = (color >> 16) & 0xFF;
+    pixel[2] = (color >> 8) & 0xFF;
+#else
+    pixel[0] = color & 0xFF;
+    pixel[1] = (color >> 8) & 0xFF;
+    pixel[2] = (color >> 16) & 0xFF;
+#endif
 }
-
-
-
 
 
 
@@ -52,12 +57,11 @@ void render(){
 
   // Draw to screen
   int offset = 0;
-  Uint32 *pixels = (Uint32*) screen->pixels;
   for (int y = 0; y < HEIGHT; y++){
     for (int x = 0 ;x < WIDTH; x++){
-      offset = (screen->pitch / sizeof(Uint32)) * y + x;
-      int br = (x*x+y*y)+t ;
-      *(pixels + offset) = br;
+      int expr = x*y*t/1000;
+      int color = SDL_MapRGB(screen->format,expr,expr,expr);
+      PutPixel24(screen,x,y,color);
     }
   }
 
