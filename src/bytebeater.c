@@ -59,8 +59,8 @@ void render(){
 
   // Draw to screen
   int offset = 0;
-  for (int y = 0; y < HEIGHT; y++){
-    for (int x = 0 ;x < WIDTH; x++){
+  for (int y = 0; y < HEIGHT; y+=1){
+    for (int x = 0 ;x < WIDTH; x+=1){
       t++;
       float expr = ((x)^(y+time))/(sin(time/100000.+(y/100.))+1.01)*10;
       int color = SDL_MapRGB(screen->format,expr,expr,expr);
@@ -73,7 +73,6 @@ void render(){
     SDL_UnlockSurface(screen);
 
   // Tell SDL to update the whole screen
-  SDL_UpdateRect(screen, 0, 0, WIDTH, HEIGHT);    
 }
 
 int main(int argc,char *argv[]){
@@ -89,10 +88,8 @@ int main(int argc,char *argv[]){
 
   }
 
-
-
-  screen = SDL_SetVideoMode( WIDTH, HEIGHT, BPP, SDL_HWSURFACE );
-
+  screen = SDL_SetVideoMode(WIDTH, HEIGHT, BPP, SDL_SWSURFACE );
+  
   if( screen == NULL ) {
 
     fprintf(stderr, "Couldn't set %ix%ix%i video mode: %s\n", WIDTH,HEIGHT,BPP, SDL_GetError());
@@ -100,6 +97,7 @@ int main(int argc,char *argv[]){
     exit(1);
 
   }
+
 
 
   //SDL_ShowCursor( SDL_DISABLE ); // The cursor is ugly :)
@@ -110,8 +108,6 @@ int main(int argc,char *argv[]){
   SDL_Color clrFg = {255,255,255,0};  // Blue ("Fg" is foreground)
   SDL_Surface *sText = TTF_RenderText_Solid( font, "Some random text", clrFg );
   SDL_Rect rcDest = {10,10,0,0};
-  SDL_BlitSurface( sText,NULL, screen,&rcDest );
-  SDL_FreeSurface( sText );
 
   int running = 1;
   SDL_Event event;
@@ -123,6 +119,9 @@ int main(int argc,char *argv[]){
 
     render();
 
+    SDL_UpdateRect(screen, 0, 0, WIDTH, HEIGHT);    
+  SDL_BlitSurface( sText,NULL, screen,&rcDest );
+    SDL_Flip(screen);
 
     while (SDL_PollEvent (&event) != 0){
       switch(event.type){
@@ -135,6 +134,7 @@ int main(int argc,char *argv[]){
 
 
   TTF_CloseFont( font );
+  SDL_FreeSurface( sText );
 
   atexit(TTF_Quit);
 
