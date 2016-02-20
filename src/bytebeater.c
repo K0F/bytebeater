@@ -1,3 +1,23 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright (C) Krystof Pesek, 2016
+ */
+
+
+
+
 #include "bytebeater.h"
 
 #define TRUE 1
@@ -41,7 +61,7 @@ void render(){
   int offset = 0;
   for (int y = 0; y < HEIGHT; y++){
     for (int x = 0 ;x < WIDTH; x++){
-  t++;
+      t++;
       float expr = ((x)^(y+time))/(sin(time/100000.+(y/100.))+1.01)*10;
       int color = SDL_MapRGB(screen->format,expr,expr,expr);
       PutPixel24(screen,x,y,color);
@@ -106,9 +126,9 @@ int main(int argc,char *argv[]){
 
     while (SDL_PollEvent (&event) != 0){
       switch(event.type){
-	case SDL_KEYDOWN: if (event.key.keysym.sym == SDLK_ESCAPE)
-			    running = 0;
-			  break;
+        case SDL_KEYDOWN: if (event.key.keysym.sym == SDLK_ESCAPE)
+                            running = 0;
+                          break;
       }
     }
   }
@@ -127,16 +147,16 @@ int main(int argc,char *argv[]){
 }
 void PutPixel24(SDL_Surface * surface, int x, int y, Uint32 color)
 {
-    Uint8 * pixel = (Uint8*)surface->pixels;
-    pixel += (y * surface->pitch) + (x * sizeof(Uint8) * 3);
+  Uint8 * pixel = (Uint8*)surface->pixels;
+  pixel += (y * surface->pitch) + (x * sizeof(Uint8) * 3);
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    pixel[0] = (color >> 24) & 0xFF;
-    pixel[1] = (color >> 16) & 0xFF;
-    pixel[2] = (color >> 8) & 0xFF;
+  pixel[0] = (color >> 24) & 0xFF;
+  pixel[1] = (color >> 16) & 0xFF;
+  pixel[2] = (color >> 8) & 0xFF;
 #else
-    pixel[0] = color & 0xFF;
-    pixel[1] = (color >> 8) & 0xFF;
-    pixel[2] = (color >> 16) & 0xFF;
+  pixel[0] = color & 0xFF;
+  pixel[1] = (color >> 8) & 0xFF;
+  pixel[2] = (color >> 16) & 0xFF;
 #endif
 }
 
