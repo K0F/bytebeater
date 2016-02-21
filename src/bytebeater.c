@@ -103,11 +103,14 @@ void render(){
 
   // Draw to screen
   int offset = 0;
+  float r,g,b;
   for (int y = 0; y < HEIGHT; y+=2){
     for (int x = 0 ;x < WIDTH; x+=2){
       t++;
-      float expr = x+y+(sin((t/WIDTH*HEIGHT/100000.0)+(time/100000.0))*255 );
-      int color = SDL_MapRGB(screen->format,expr,expr,expr);
+      r = ((x^y+time)+time);
+      g = ((x^y+(time/2))+(time/1.1));
+      b = ((x^y+(time/4))+(time/1.3333));
+      int color = SDL_MapRGB(screen->format,r,g,b);
       PutPixel24(screen,x,y,color);
     }
   }
