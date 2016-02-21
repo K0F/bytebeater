@@ -107,9 +107,15 @@ void render(){
   for (int y = 0; y < HEIGHT; y+=2){
     for (int x = 0 ;x < WIDTH; x+=2){
       t++;
-      r = ((x^y+(int)(time/sqrt(((WIDTH/2-x)*(WIDTH/2-x)) + ((HEIGHT/2-y)*(HEIGHT/2-y)))*100) )+(time/sqrt(x*x+y*y)));
-      g = ((x^y+(int)(time/sqrt(((WIDTH/2-x)*(WIDTH/2-x)) + ((HEIGHT/2-y)*(HEIGHT/2-y)))*101) )+(time/sqrt(x*x+y*y)));
-      b = ((x^y+(int)(time/sqrt(((WIDTH/2-x)*(WIDTH/2-x)) + ((HEIGHT/2-y)*(HEIGHT/2-y)))*102) )+(time/sqrt(x*x+y*y)));
+      float X1 = cos(time/10.0)*WIDTH/2+WIDTH/2;
+      float Y1 = sin(time/11.1)*WIDTH/2+WIDTH/2;
+      float X2 = cos(time/10.2)*WIDTH/2+WIDTH/2;
+      float Y2 = sin(time/11.3)*WIDTH/2+WIDTH/2;
+       float X3 = cos(time/10.4)*WIDTH/2+WIDTH/2;
+      float Y3 = sin(time/11.5)*WIDTH/2+WIDTH/2;
+       r = ((x^y+(int)(time/sqrt(((X1-x)*(X1-x)) + ((Y1-y)*(Y1-y)))*100) )+(time/sqrt(x*x+y*y)));
+      g = ((x^y+(int)(time/sqrt(((X2-x)*(X2-x)) + ((Y2-y)*(Y2-y)))*100.1) )+(time/sqrt(x*x+y*y)));
+      b = ((x^y+(int)(time/sqrt(((X3-x)*(X3-x)) + ((Y3-y)*(Y3-y)))*100.1333) )+(time/sqrt(x*x+y*y)));
       int color = SDL_MapRGB(screen->format,r,g,b);
       PutPixel24(screen,x,y,color);
     }
