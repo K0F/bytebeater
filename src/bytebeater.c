@@ -107,9 +107,9 @@ void render(){
   for (int y = 0; y < HEIGHT; y+=2){
     for (int x = 0 ;x < WIDTH; x+=2){
       t++;
-      r = ((x^y+time)+time);
-      g = ((x^y+(time/2))+(time/1.1));
-      b = ((x^y+(time/4))+(time/1.3333));
+      r = ((x^y+(int)(time/sqrt(((WIDTH/2-x)*(WIDTH/2-x)) + ((HEIGHT/2-y)*(HEIGHT/2-y)))*100) )+(time/sqrt(x*x+y*y)));
+      g = ((x^y+(int)(time/sqrt(((WIDTH/2-x)*(WIDTH/2-x)) + ((HEIGHT/2-y)*(HEIGHT/2-y)))*101) )+(time/sqrt(x*x+y*y)));
+      b = ((x^y+(int)(time/sqrt(((WIDTH/2-x)*(WIDTH/2-x)) + ((HEIGHT/2-y)*(HEIGHT/2-y)))*102) )+(time/sqrt(x*x+y*y)));
       int color = SDL_MapRGB(screen->format,r,g,b);
       PutPixel24(screen,x,y,color);
     }
