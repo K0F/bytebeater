@@ -18,3 +18,4 @@ target_link_libraries(bytebeater ${SDLTTF_LIBRARY})
 target_link_libraries(bytebeater ${SDLAUDIO_LIBRARY})
 target_link_libraries(bytebeater m)
 
+add_custom_command(TARGET bytebeater POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/assets)
