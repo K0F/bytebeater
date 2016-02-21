@@ -8,11 +8,13 @@ find_package(Threads)
 include_directories("include/")
 include_directories(${SDL_INCLUDE_DIR})
 include_directories(${SDLTTF_INCLUDE_DIR})
+include_directories(${SDLAUDIO_INCLUDE_DIR})
 
 
 add_executable(bytebeater "src/bytebeater.c")
 target_link_libraries(bytebeater ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(bytebeater ${SDL_LIBRARY})
 target_link_libraries(bytebeater ${SDLTTF_LIBRARY})
+target_link_libraries(bytebeater ${SDLAUDIO_LIBRARY})
 target_link_libraries(bytebeater m)
 

@@ -24,8 +24,8 @@
 #define FALSE 0
 #define BUFSIZE 256
 
-#define WIDTH 800
-#define HEIGHT 450
+#define WIDTH 640
+#define HEIGHT 480
 #define BPP 24
 #define sec 1000;
 
@@ -42,6 +42,50 @@ float minframetime;
 SDL_Surface *screen;
 Uint32 frametime;
 int time =0;
+/*
+// NOTE: Sound test
+int SamplesPerSecond = 44100;
+int ToneHz = 256;
+Uint16 ToneVolume = 3000;
+Uint32 RunningSampleIndex = 0;
+int SquareWavePeriod = SamplesPerSecond / ToneHz;
+int HalfSquareWavePeriod = SquareWavePeriod / 2;
+int BytesPerSample = sizeof(int16) * 2;
+*/
+
+/*
+  internal void
+SDLAudioCallback(void *UserData, Uint8 *AudioData, int Length)
+{
+  sdl_audio_ring_buffer *RingBuffer = (sdl_audio_ring_buffer *)UserData;
+
+  int Region1Size = Length;
+  int Region2Size = 0;
+  if (RingBuffer->PlayCursor + Length > RingBuffer->Size)
+  {
+    Region1Size = RingBuffer->Size - RingBuffer->PlayCursor;
+    Region2Size = Length - Region1Size;
+  }
+  memcpy(AudioData, (uint8*)(RingBuffer->Data) + RingBuffer->PlayCursor, Region1Size);
+  memcpy(&AudioData[Region1Size], RingBuffer->Data, Region2Size);
+  RingBuffer->PlayCursor = (RingBuffer->PlayCursor + Length) % RingBuffer->Size;
+  RingBuffer->WriteCursor = (RingBuffer->PlayCursor + 2048) % RingBuffer->Size;
+}
+*/
+
+/////////////////////////////////////////////
+
+
+
+struct sdl_audio_ring_buffer
+{
+  int Size;
+  int WriteCursor;
+  int PlayCursor;
+  void *Data;
+};
+
+
 
 
 void render(){   
@@ -59,10 +103,10 @@ void render(){
 
   // Draw to screen
   int offset = 0;
-  for (int y = 0; y < HEIGHT; y+=1){
-    for (int x = 0 ;x < WIDTH; x+=1){
+  for (int y = 0; y < HEIGHT; y+=2){
+    for (int x = 0 ;x < WIDTH; x+=2){
       t++;
-      float expr = ((x)^(y+time))/(sin(time/100000.+(y/100.))+1.01)*10;
+      float expr = x+y+(sin((t/WIDTH*HEIGHT/100000.0)+(time/100000.0))*255 );
       int color = SDL_MapRGB(screen->format,expr,expr,expr);
       PutPixel24(screen,x,y,color);
     }
@@ -88,8 +132,8 @@ int main(int argc,char *argv[]){
 
   }
 
-  screen = SDL_SetVideoMode(WIDTH, HEIGHT, BPP, SDL_SWSURFACE );
-  
+  screen = SDL_SetVideoMode(WIDTH, HEIGHT, BPP, SDL_HWSURFACE );
+
   if( screen == NULL ) {
 
     fprintf(stderr, "Couldn't set %ix%ix%i video mode: %s\n", WIDTH,HEIGHT,BPP, SDL_GetError());
@@ -117,11 +161,13 @@ int main(int argc,char *argv[]){
 
   while(running==1){
 
+
     render();
 
     SDL_UpdateRect(screen, 0, 0, WIDTH, HEIGHT);    
-  SDL_BlitSurface( sText,NULL, screen,&rcDest );
+    SDL_BlitSurface( sText,NULL, screen,&rcDest );
     SDL_Flip(screen);
+    SDL_Delay(16.667);
 
     while (SDL_PollEvent (&event) != 0){
       switch(event.type){
@@ -145,6 +191,8 @@ int main(int argc,char *argv[]){
   return 0;
 
 }
+
+
 void PutPixel24(SDL_Surface * surface, int x, int y, Uint32 color)
 {
   Uint8 * pixel = (Uint8*)surface->pixels;
