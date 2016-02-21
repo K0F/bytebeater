@@ -54,24 +54,24 @@ int BytesPerSample = sizeof(int16) * 2;
 */
 
 /*
-  internal void
-SDLAudioCallback(void *UserData, Uint8 *AudioData, int Length)
-{
-  sdl_audio_ring_buffer *RingBuffer = (sdl_audio_ring_buffer *)UserData;
+   internal void
+   SDLAudioCallback(void *UserData, Uint8 *AudioData, int Length)
+   {
+   sdl_audio_ring_buffer *RingBuffer = (sdl_audio_ring_buffer *)UserData;
 
-  int Region1Size = Length;
-  int Region2Size = 0;
-  if (RingBuffer->PlayCursor + Length > RingBuffer->Size)
-  {
-    Region1Size = RingBuffer->Size - RingBuffer->PlayCursor;
-    Region2Size = Length - Region1Size;
-  }
-  memcpy(AudioData, (uint8*)(RingBuffer->Data) + RingBuffer->PlayCursor, Region1Size);
-  memcpy(&AudioData[Region1Size], RingBuffer->Data, Region2Size);
-  RingBuffer->PlayCursor = (RingBuffer->PlayCursor + Length) % RingBuffer->Size;
-  RingBuffer->WriteCursor = (RingBuffer->PlayCursor + 2048) % RingBuffer->Size;
-}
-*/
+   int Region1Size = Length;
+   int Region2Size = 0;
+   if (RingBuffer->PlayCursor + Length > RingBuffer->Size)
+   {
+   Region1Size = RingBuffer->Size - RingBuffer->PlayCursor;
+   Region2Size = Length - Region1Size;
+   }
+   memcpy(AudioData, (uint8*)(RingBuffer->Data) + RingBuffer->PlayCursor, Region1Size);
+   memcpy(&AudioData[Region1Size], RingBuffer->Data, Region2Size);
+   RingBuffer->PlayCursor = (RingBuffer->PlayCursor + Length) % RingBuffer->Size;
+   RingBuffer->WriteCursor = (RingBuffer->PlayCursor + 2048) % RingBuffer->Size;
+   }
+   */
 
 /////////////////////////////////////////////
 
@@ -107,13 +107,13 @@ void render(){
   for (int y = 0; y < HEIGHT; y+=2){
     for (int x = 0 ;x < WIDTH; x+=2){
       t++;
-      float X1 = cos(time/10.0)*WIDTH/2+WIDTH/2;
-      float Y1 = sin(time/11.1)*WIDTH/2+WIDTH/2;
-      float X2 = cos(time/10.2)*WIDTH/2+WIDTH/2;
-      float Y2 = sin(time/11.3)*WIDTH/2+WIDTH/2;
-       float X3 = cos(time/10.4)*WIDTH/2+WIDTH/2;
-      float Y3 = sin(time/11.5)*WIDTH/2+WIDTH/2;
-       r = ((x^y+(int)(time/sqrt(((X1-x)*(X1-x)) + ((Y1-y)*(Y1-y)))*100) )+(time/sqrt(x*x+y*y)));
+      float X1 = cos(time/100.0)*WIDTH/2+WIDTH/2;
+      float Y1 = sin(time/100.1)*WIDTH/2+WIDTH/2;
+      float X2 = cos(time/100.2)*WIDTH/2+WIDTH/2;
+      float Y2 = sin(time/101.3)*WIDTH/2+WIDTH/2;
+      float X3 = cos(time/100.4)*WIDTH/2+WIDTH/2;
+      float Y3 = sin(time/101.5)*WIDTH/2+WIDTH/2;
+      r = ((x^y+(int)(time/sqrt(((X1-x)*(X1-x)) + ((Y1-y)*(Y1-y)))*100) )+(time/sqrt(x*x+y*y)));
       g = ((x^y+(int)(time/sqrt(((X2-x)*(X2-x)) + ((Y2-y)*(Y2-y)))*100.1) )+(time/sqrt(x*x+y*y)));
       b = ((x^y+(int)(time/sqrt(((X3-x)*(X3-x)) + ((Y3-y)*(Y3-y)))*100.1333) )+(time/sqrt(x*x+y*y)));
       int color = SDL_MapRGB(screen->format,r,g,b);
@@ -159,7 +159,7 @@ int main(int argc,char *argv[]){
   TTF_Font *font = TTF_OpenFont( "assets/SempliceRegular.ttf", 8 );
 
   SDL_Color clrFg = {255,255,255,0};  // Blue ("Fg" is foreground)
-  SDL_Surface *sText = TTF_RenderText_Solid( font, "Some random text", clrFg );
+  SDL_Surface *sText = TTF_RenderText_Solid( font, "Time space curvature", clrFg );
   SDL_Rect rcDest = {10,10,0,0};
 
   int running = 1;
