@@ -24,8 +24,8 @@
 #define FALSE 0
 #define BUFSIZE 256
 
-#define WIDTH 640
-#define HEIGHT 480
+#define WIDTH 320
+#define HEIGHT 240
 #define BPP 24
 #define sec 1000;
 
@@ -42,36 +42,6 @@ float minframetime;
 SDL_Surface *screen;
 Uint32 frametime;
 int time =0;
-/*
-// NOTE: Sound test
-int SamplesPerSecond = 44100;
-int ToneHz = 256;
-Uint16 ToneVolume = 3000;
-Uint32 RunningSampleIndex = 0;
-int SquareWavePeriod = SamplesPerSecond / ToneHz;
-int HalfSquareWavePeriod = SquareWavePeriod / 2;
-int BytesPerSample = sizeof(int16) * 2;
-*/
-
-/*
-   internal void
-   SDLAudioCallback(void *UserData, Uint8 *AudioData, int Length)
-   {
-   sdl_audio_ring_buffer *RingBuffer = (sdl_audio_ring_buffer *)UserData;
-
-   int Region1Size = Length;
-   int Region2Size = 0;
-   if (RingBuffer->PlayCursor + Length > RingBuffer->Size)
-   {
-   Region1Size = RingBuffer->Size - RingBuffer->PlayCursor;
-   Region2Size = Length - Region1Size;
-   }
-   memcpy(AudioData, (uint8*)(RingBuffer->Data) + RingBuffer->PlayCursor, Region1Size);
-   memcpy(&AudioData[Region1Size], RingBuffer->Data, Region2Size);
-   RingBuffer->PlayCursor = (RingBuffer->PlayCursor + Length) % RingBuffer->Size;
-   RingBuffer->WriteCursor = (RingBuffer->PlayCursor + 2048) % RingBuffer->Size;
-   }
-   */
 
 /////////////////////////////////////////////
 
@@ -104,18 +74,10 @@ void render(){
   // Draw to screen
   int offset = 0;
   float r,g,b;
-  for (int y = 0; y < HEIGHT; y+=2){
-    for (int x = 0 ;x < WIDTH; x+=2){
+  for (int y = 0; y < HEIGHT; y+=1){
+    for (int x = 0 ;x < WIDTH; x+=1){
       t++;
-      float X1 = cos(time/100.0)*WIDTH/2+WIDTH/2;
-      float Y1 = sin(time/100.1)*WIDTH/2+WIDTH/2;
-      float X2 = cos(time/100.2)*WIDTH/2+WIDTH/2;
-      float Y2 = sin(time/101.3)*WIDTH/2+WIDTH/2;
-      float X3 = cos(time/100.4)*WIDTH/2+WIDTH/2;
-      float Y3 = sin(time/101.5)*WIDTH/2+WIDTH/2;
-      r = ((x^y+(int)(time/sqrt(((X1-x)*(X1-x)) + ((Y1-y)*(Y1-y)))*100) )+(time/sqrt(x*x+y*y)));
-      g = ((x^y+(int)(time/sqrt(((X2-x)*(X2-x)) + ((Y2-y)*(Y2-y)))*100.1) )+(time/sqrt(x*x+y*y)));
-      b = ((x^y+(int)(time/sqrt(((X3-x)*(X3-x)) + ((Y3-y)*(Y3-y)))*100.1333) )+(time/sqrt(x*x+y*y)));
+      r=g=b=(sin((x^y)*time/1000.0+(t/1000000.0))+1)*127;
       int color = SDL_MapRGB(screen->format,r,g,b);
       PutPixel24(screen,x,y,color);
     }
@@ -202,8 +164,7 @@ int main(int argc,char *argv[]){
 }
 
 
-void PutPixel24(SDL_Surface * surface, int x, int y, Uint32 color)
-{
+void PutPixel24(SDL_Surface * surface, int x, int y, Uint32 color){
   Uint8 * pixel = (Uint8*)surface->pixels;
   pixel += (y * surface->pitch) + (x * sizeof(Uint8) * 3);
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -216,6 +177,4 @@ void PutPixel24(SDL_Surface * surface, int x, int y, Uint32 color)
   pixel[2] = (color >> 16) & 0xFF;
 #endif
 }
-
-
 
